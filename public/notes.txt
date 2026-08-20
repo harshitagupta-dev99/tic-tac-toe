@@ -1,0 +1,61 @@
+React can change how you think about the designs you look at and the apps you build. HOW ??
+-  When you build a user interface with React, you will first break it apart into pieces called components. Then, you will describe the different visual states for each of your components. Finally, you will connect your components together so that the data flows through them.
+
+Separation of concerns - it is a design technique jimse a component should ideally only be concerned with one thing. If it ends up growing, it should be decomposed into smaller subcomponents.
+
+step 1 : identify the componenents from the designs
+step 2: define the component heirarchy. Components inside another component in the design = child component in heirarchy 
+step 3: build a static version of your app . Covers displaying data & design of UI using props & your data model. No state introduced yet ==> meaning no interactivity added yet.
+step 4 : Add interactivtiy to the app - how - by first structuring your state - how ?? 
+    - a) Think of all of the pieces of data in the example application
+    - b) Identify which of these is a state 
+           # Does it remain unchanged over time? If so, it isn’t state.
+           # Is it passed in from a parent via props? If so, it isn’t state. - this one not very clear !!
+           # Can you compute it based on existing state or props in your component? If so, it definitely isn’t state!
+step 5: identify where should the state live ==> meaning which component owns the state. how to figure it out ??
+        # Identify the components that u think will be using that state
+        # Find their common parent - a component above them all in the hierarchy.
+        # Decide where the state lives
+            ==> Often, you can put the state directly into their common parent.
+            ==> You can also put the state into some component above their common parent.
+            ==> If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component
+step6: add inverse data flow - say user input changes, data changes - this has to be handeld then 
+
+data flow in react --> unidirectional --> from parent to child 
+
+component names always starts with a capital letter as a convention
+
+component - reusable peice of code , represent any part of UI.
+
+jbhi bhi aapko js use krni in react - use {} --> isse react ko pata chalta ki yahan pe js use kiya jaa rha hai in html . so whenever we write {abc} then the value of the abc variable gets embeeded here and is displayed in the uI.
+
+ To “remember” things, components uses state.
+ Each component has itw own state. Say component names square is called 3 times in the parent component : 
+
+ <Square/>
+ <Square/>
+ <Square/>
+
+ then , Each Square has its own state: the value stored in each Square is completely independent of the others.
+
+ When you call a set function in a component, React automatically updates the child components inside too.
+
+ React Developer Tools let you check the props and the state of your React components. It is available as a Chrome, Firefox, and Edge browser extension.
+
+ To collect data from multiple children, or to have two child components communicate with each other, declare the shared state in their parent component instead. The parent component can pass that state back down to the children via props. This keeps the child components in sync with each other and with their parent.
+
+Lifting state into a parent component is common when React components are refactored.
+
+js in html --> use {}
+
+ab agar meko parent ka state update krna from the child - how to do ??
+- pass down a function from parent to child and use that to update the state
+- directly child se toh nhi krskte coz uske pass set fucntion hai hi nhi naa uss parent state ka coz state is private to a component that defines it - child ke pass toh sirf current val hai parent state ka jo ki props se aara hai !!
+
+       <Square value={squares[0]} onSquareClick={() => handleClick(0)} />  /*why this arrow unction logic works*/
+
+When the Parent's state changes, both the parent component and every child component re-renders automatically. 
+
+ In React, it’s conventional to use onSomething names for props which represent events and handleSomething for the function definitions which handle those events.
+
+props vs state ?? - whats the difference between the two ??
