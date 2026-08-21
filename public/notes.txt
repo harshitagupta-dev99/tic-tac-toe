@@ -46,7 +46,12 @@ jbhi bhi aapko js use krni in react - use {} --> isse react ko pata chalta ki ya
 
 Lifting state into a parent component is common when React components are refactored.
 
-js in html --> use {}
+js in html --> use {} --> usecase : dynamically cheezein render krni ho ( for eg: dispalying hello username where username keeps changing based on who has logged in )
+
+{{ backgroundColor : 'red' , text: 'center'}} in JSX --> object is being passed inside jsx . so one bracket is for the object and outer one is for js in html --> usecase: inline styles require an object to be passed 
+
+so jabhi object pass krte html mai --> use {{}}
+
 
 ab agar meko parent ka state update krna from the child - how to do ??
 - pass down a function from parent to child and use that to update the state
@@ -59,3 +64,73 @@ When the Parent's state changes, both the parent component and every child compo
  In React, it’s conventional to use onSomething names for props which represent events and handleSomething for the function definitions which handle those events.
 
 props vs state ?? - whats the difference between the two ??
+
+React is a JavaScript library for rendering user interfaces (UI) --> diff bet library & framework ? is angular a framework ? render meaning ? markup meaning ?
+
+===============================================================================
+What is a component ?
+
+- it is the building block of UI. Every app can be broken down into components from a table to a small btn on a page.
+
+- reusable piece of code - you can define it once and then use it is multiple times in same place or different places - magic isnt it !!
+
+- a simple javascript function sprinkled with markup - jisko yahan jsx bolte- jsx is basically writing html in javascript file maane dono likh skte sath sath instead of isolating them seperately ( technically jsx ==> syntax extension of js only)
+
+- component name always start with a capital letter ( react convention ) - nah ho toh ?? - code ni chalega - error aayegi !! - but why capital ?? - coz react identifies html tags by lowercase, javascript by {}, styling by style tag and className instead of just class , and component by captial letter otherwise kaise differentiate krega - smarty :)
+
+
+eg: export default function Profile() {
+  return ( //yeh paranthesis mandatory hai if code spans multiple lines , nhi lagoage toh line 73 ke baad jo bhi likhoge ignore hojeygi - hehe :)
+    <img
+      src="https://react.dev/images/docs/scientists/MK3eW3Am.jpg"
+      alt="Katherine Johnson"
+    />
+  );
+}
+
+Here, export default is standard js syntax which lets you mark the main function in this file using default keyword and make it available for use to other files in the folder using export keyword.
+
+Ques: Can we write multiple components in the same file ?
+
+- Yes we can, but the main component is single only. Since components are regular js functions, we can write multiple components in same file. Preffered if too small & tightly coupled with the code - else prefer to make it a in a seperate file ( better readability + reusablity)
+
+Note : Components can render other components, but you must never nest their definitions: causes issues and bugs 
+
+export default function Gallery() {  XXXXXXXXXX
+  // 🔴 Never define a component inside another component!
+  function Profile() { XXXXXXXXX
+    // ...
+  }
+  // ...
+}
+
+Note : refer to the link for named vs default exports , explained in detail with eg - https://react.dev/learn/importing-and-exporting-components
+- A file can only have one default export, but it can have numerous named exports!
+
+export function Profile() {...} //named export 
+--> while importing:  import { Profile } from './Gallery.js'; --> the name of component shoudl match exactly and use {} 
+
+default export function Gallery(...) //default export 
+--> while importing:  import Gallery from './Gallery.js'; --> the name of component not necessary match exactly and dont use {} XXXX
+
+Ques : Is it mandatory for a component to have a default export always ?
+
+- NO , you can have a file which has components only with named exports as well
+- Usually agar single compoent banare toh default export use krte other wise mix ya named export use krte 
+
+Ques : Why do multiple JSX tags need to be wrapped? 
+
+JSX looks like html but under the hood gets converted to js objects. One cannot return 2 js object from a js function without wrapping it in an array right...similarly when we want to return multiple elements/components from a component - one has to wrap it in a parent tag like <div>...</div> or a fragment <></> 
+
+Ques : What is the advantage of using a fragment over a div ?
+
+A fragment will group the things and not leave any trace in the browser HTML tree whereas div toh visible hoyega in html tree.
+
+Ques : Rules of jsx ?
+
+Answer:
+       1. Return only a single root element from a component. agar multiple ele hai toh unko fragmet ya div mai wrap krdo
+
+       2. always close all the tags like li , img ,b , i , etc...
+
+       3. use camelCase for attributes & vairable names --> why ?? - coz under the hood jsx converts ot javascript jisme dash ya reserved keywords; yeh allowed nhi hota variable naming mai so we avoid it. isiliye class ki jagah className likhte !!
