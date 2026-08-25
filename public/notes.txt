@@ -134,3 +134,352 @@ Answer:
        2. always close all the tags like li , img ,b , i , etc...
 
        3. use camelCase for attributes & vairable names --> why ?? - coz under the hood jsx converts ot javascript jisme dash ya reserved keywords; yeh allowed nhi hota variable naming mai so we avoid it. isiliye class ki jagah className likhte !!
+
+Props ??
+- the way through which react components share data with each other.
+- parent component can pass required data to child components by passing props 
+- read only hote hain - meaning props are immutable 
+-  props are the only argument to your component! 
+-  React component functions accept a single argument, a props object:
+
+eg:
+function Avatar(props) { //props is an object here
+  let person = props.person;
+  let size = props.size;
+  // ...
+}
+
+- the other way to read these props in child component is destructuring them :
+- one can also give a fallback/default value to a prop:
+
+eg:
+function Avatar({person,size = 100}){
+  console.log(person);
+  console.log(size);
+  //...
+}
+
+Note : The default value is only used if the size prop is missing or if you pass size={undefined}. But if you pass size={null} or size={0}, the default value will not be used.
+
+Ques : Props reflect a component’s data at any point in time, rather than only in the beginning but props are read only & immutable - so how is this possible ??
+
+Ans : If you want to change props ka data, u have to ask the parent component to send different set of props proabably a new object.toh jo old props hai usko ignore krdega react and new props ko use krega 
+
+Ques : what is children prop ?
+
+ANs : Whenever we nest JSX like <Card> <p>hello</p> <Avatar /> <h1>whats up</h1> </Card> , here the parent component - Card recieves the inner content ( the nested content) in form of the chilren props and this can be used to render the component in UI like below : 
+
+function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
+    </div>
+  );
+}
+
+2 most imp points about props : 
+- Props are read-only snapshots in time: every render receives a new version of props.
+- You can’t change props. When you need interactivity, you’ll need to set state.
+
+------------------------------------------------------------------------------------
+Conditional rendering ==> means that u render different info/components based on some conditions in ur code . In React, you control branching logic with JavaScript.
+
+** React doesn’t render anything in its place if it recieves : 
+- false
+- null
+- undefined
+
+Pitfall ; Dont write 0 on left side in &&  - react doesnt treat it as false
+
+For example, a common mistake is to write code like messageCount && <p>New messages</p>. It’s easy to assume that it renders nothing when messageCount is 0, but it really renders the 0 itself!
+
+To fix it, make the left side a boolean: messageCount > 0 && <p>New messages</p>
+
+iske explanation ke liye - check how && works in js and how 0/falsy works in &&  - same tarah se idhar bhi krega !! Also check for || - hhehe!!
+------------------------------------------------------------------------------------
+Rendering lists in UI 
+
+eg : 
+
+const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'chemist',
+}
+...];
+
+
+export default function List() {
+
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const listItems = chemists.map(person =>
+    <li key={person.id}>{person}</li>
+  );
+
+  return <ul>{listItems}</ul>;
+}
+
+Here, map()  is used to transform the array of content into an array of li component 
+
+Here, filter() is used to filter out items that satisfy a particular condition and then we can display those in the UI. 
+
+Why do we need to specify a key in react ?
+
+KEY ANALOGY : 
+File names in a folder and JSX keys in an array serve a similar purpose.
+
+A key acts as a unique identifier of the item among its siblings. Even if the position of this item gets reordered due to sorting/insertion/deletion - the key lets React identify the item throughout its lifetime. 
+
+2 rules of keys to be followed : 
+
+  1. keys should always be unique - tbhi toh item ko properly identify krpayegi among its siblings 
+
+  2. keys should not change - if keys changes everytime, then it wont match on rerenders and poora dom tree dobara recreate hoga and koi user input hui toh woh loose hojayegi + it will be very slow ( whole purpose of react will fail here !! )
+
+Pitfalls : 
+
+  1. Do not use array index as keys - coz jab elements reorder/insert/delete hote toh items upar neeche hote and indexing change hojati - violates our rule 2 that keys should not change - causes bugs 
+
+  2. Do not generate keys on the fly e.g. with key={Math.random()} - again keys will change and never match up between renders, dom recreated everytime - slow krdega applicaiton ko + violates rule 2. 
+
+  3. Note that your components won’t receive key as a prop. It’s only used as a hint by React itself. If your component needs an ID, you have to pass it as a separate prop: <Profile key={id} userId={id} />.
+
+  4. <>...</> - this short hand does not accept the key={..} , so use a fragment instead.
+
+So what to do ??
+Instead, use a stable ID based on the data for the keys. 
+------------------------------------------------------------------------------
+****
+QUes : In section of rendering list - challenge 1 - its given - A very attentive reader might notice that with two filter calls, we check each person’s profession twice. Checking a property is very fast, so in this example it’s fine. If your logic was more expensive than that, you could replace the filter calls with a loop that manually constructs the arrays and checks each person once. In fact, if people never change, you could move this code out of your component. -- what does this last line mean here ??
+
+---------------------------------------------------------------------------------
+***** 
+QUes : The key is needed directly within the context of the surrounding array - what does this mean ??
+
+eg: 
+recipes.map((recipe)=>{
+  return (
+    <div key={recipe.id}>
+    <Recipe and yahan props />
+    </div>
+  );
+})
+
+eg: 
+recipes.map((recipe)=>{
+  return (
+    <Recipe key={recipe.id} and yahan props />
+  );
+})
+
+Recipe(){
+  return (
+    <div>
+    .........
+    </div>
+  );
+}
+
+Previously, you had an array of <div>s so each of them needed a key, but now you have an array of <Recipe> ,so u pass the key here and not inside the Recipe where u shifted the div.
+-------------------------------------------------------------------------------
+Why react components care about purity ??
+
+React wants components to be pure becuase it cares about predictability . React wants that if we give a component same input 'n' times → same JSX should be produced , and rendering should not change anything outside the component.
+
+But why react cares about predictability ??
+
+- Because React may render your component more than once. For example, React may render, pause, restart, or re-render as part of its rendering process and development checks.
+
+If your render function is pure: same input will give same output. but if on same input- there is a change in external variables then it will produce different outputs. And repeated rendering can produce weird results. 
+
+React:
+"Main tumhara component 1 baar run karun?"
+
+Component:
+"Okay."
+
+React:
+"2 baar run karun?"
+
+Component:
+"Okay."
+
+React:
+"Beech mein stop karke phir dobara run karun?"
+
+Component:
+"Okay."
+
+React:
+"Same input diya hai. Same result milna chahiye."
+
+Component:
+"Yes."
+
+That's purity.
+
+Component ke bahar ka object
+        ↓
+       ❌ mutate mat karo
+
+
+Component ke andar abhi-abhi banaya object
+        ↓
+       ✅ mutate kar sakte ho
+-------------------------------------------------------------------------------
+What is a side effect ?
+
+Function ke main output/result ke alawa bahar ki duniya mein koi noticeable change karna ya interact krna = side effect. Ab woh synchronization hai ya nahi, woh task/purpose par depend karta hai. React docs ke according side effects rendering ke andar nahi hone chahiye. React docs specifically recommend event handlers for these changes.
+
+okk..but why so - why react does not allow side effects while rendering ??
+- Rendering is React's calculation phase like making a design of a home ( like desgining phase ). React needs this calculation to be safe to repeat or discard. Becuase react can render a component multiple times/restart render midway or abandon it completely.Therefore, don't make the outside world change while doing that calculation. 
+
+RENDER
+"What should the UI look like?"
+        ↓
+PURE CALCULATION
+        ↓
+safe to repeat/discard
+
+
+SIDE EFFECT
+"Change something outside React"
+        ↓
+Do it at an appropriate time
+(event handler / effect)
+
+---------------------------------------------- eg -------------------
+
+function BuyButton() {
+
+  function handleBuy() {
+    console.log("Product bought!");
+  }
+
+  return (
+    <button onClick={handleBuy}>
+      Buy
+    </button>
+  );
+}
+
+handleBuy() render ke time nahi chal raha.
+
+Ye: onClick={handleBuy}
+
+sirf React ko bol raha hai:
+
+"Jab user click kare tab is function ko chalana."
+
+So side effect happens because of an event, not because React is calculating the UI.
+
+Note : Event handler first choice. useEffect last resort.
+UI calculate karna
+        ↓
+      render
+
+User ne kuch kiya
+        ↓
+ event handler
+
+Render ke baad external system se sync karna
+        ↓
+ useEffect
+
+Exampls of side effects : 
+API call karna
+DOM change karna
+localStorage mein save karna
+console.log() karna
+timer start karna
+subscription create karna
+external library ko call karna
+
+OK so why event handlers is a safe space to execute side effects ??
+- Because event handlers do not run during rendering. Ony when the user intitates that event, the corresponsing event handler gets called. Likewise, while using useEffect, the side effect you perform (now syncing things in external system with react state/UI) is after the rendering has been completed by the react system. So even the callback jisme aap side effect run krte of use effect does not run during rendering. 
+---------------------------------------------------------------------------------
+What is external synchronization ??
+
+
+- External means :  Something outside React.
+
+For example:
+
+Browser DOM
+API/server
+third-party library
+WebSocket
+browser APIs
+
+- Synchronization means : Make two things agree with each other.
+
+So External synchronization = React state/UI ko kisi outside system ke saath consistent rakhna.
+
+Example - Say you want to update the browser document title with title count: dynamic value here, so you create a state : 
+
+const [count, setCount] = useState(0); //react state currently : count = 0; //browrser: title count: 0 shows
+
+Now, These two need to stay synchronized.If count changes to say 1 , then the browser title also needs to be updated but the browser's document.title is outside React's rendering system.
+
+So you're synchronizing: React world & the Browser world . That's an external synchronization.
+
+
+WHEN DO WE USE A USEEFFECT ??
+So useEffect is useful when you need to say:
+"After React has updated the UI, now I need to synchronize React with something outside of React system ." and not to run any peice of code after UI has been rerendered. 
+
+eg:
+useEffect(() => {
+  document.title = `Count: ${count}`;
+}, [count]);
+
+Meaning:
+
+count changes
+      ↓
+React renders
+      ↓
+UI updates
+      ↓
+effect runs
+      ↓
+browser tab title updated
+----------------------------------------------------------------------------------
+One line answers : 
+
+Render → "KYA dikhana hai?"
+DOM update → "Actually screen par DIKHA do."
+
+Q : **What is rendering?**         
+React running your component to figure out what UI should look like.                                            
+
+Q : **Why pure functions?**                            
+same inputs reliably produce same output, even if React renders again.                                       
+
+Q : **Can I pass a global object and mutate it?**      
+Yes technically, but that function is still impure. Passing it as an argument doesn't make mutation okay.       
+
+Q : **Why `setCount` instead of `count = count + 1`?** 
+`setCount` tells React that state changed and a new render is needed.                                           
+
+Q : **What is external synchronization?**              
+Keeping React's state/UI in sync with something outside React, like the DOM, video player, API connection, etc. 
+
+Summary of this session : 
+
+So basically render means react calcualte krra ki UI pe kya dikhana - uss time we avoid any side effects and want our components to be pure. Why - coz react can render multiple times then restart same component/abondon it midway./ restart it anytime or even discard and start a new one completely - if we make changes to external systems/variables during that time , we may get weird outputs becuase for same input we are getting different output becuase vairbales ka values might get changed but react wants predicatablity. for same input it always wants the same output. isiliye jabhi side effects run krna ho - we use event handlers ( for user interactions intiaited ones ) and useEffect when we want to sync changes with the react ka current state & external sytem ( eg : browser title dunamic as state changes ). Once the render process is complete, then the UI changes are commited and displayed on UI. Also , these event handlers and useEffect do not run during rendering and hence are safe for running side effects. 
+
+What is strict mode in react ?
+
+Strict Mode = development phase mein React ka "double-checker" jo extra rendering/checks karke impure components aur other problems ko jaldi expose karta hai.It is to check if the component is running properly without any problems and for same input giving the same output or not !!
+Isilie u would have noticed that react calls the component twice or thrice in the dev tools but prod mai ek hi baar call kiya hua hota. 
