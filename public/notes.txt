@@ -483,3 +483,32 @@ What is strict mode in react ?
 
 Strict Mode = development phase mein React ka "double-checker" jo extra rendering/checks karke impure components aur other problems ko jaldi expose karta hai.It is to check if the component is running properly without any problems and for same input giving the same output or not !!
 Isilie u would have noticed that react calls the component twice or thrice in the dev tools but prod mai ek hi baar call kiya hua hota. 
+To opt into Strict Mode, you can wrap your root component into <React.StrictMode>. 
+--------------------------------------------------------------------------------------
+Very Important note : 
+
+Remember that React does not guarantee that component functions will execute in any particular order, so you can’t communicate between them by setting variables. All communication must happen through props.
+
+Refer to challenges of pure component function in describing UI for revision --> all 3 examples are imp 
+-------------------------------------------------------------------------------------
+ 
+ // Copy the array!
+  const storiesToDisplay = stories.slice(); //creates new outer array, inner reference to objects is still the same as objects are reference types. agar yahan primitive values hoti toh deep copy hi hota unka meaning og mai change nako hoti !!
+
+  // Does not affect the original array:
+  storiesToDisplay.push({
+    id: 'create',
+    label: 'Create Story'
+  });
+
+  Therefore : 
+
+  slice()
+  ↓
+Outer array → NEW
+  ↓
+Elements:
+  ├── primitives → independent values ✅
+  └── objects/arrays → same references ⚠️
+
+----------------------------------------------------------------------------------------
