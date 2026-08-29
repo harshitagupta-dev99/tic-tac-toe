@@ -517,8 +517,57 @@ ADDING INTERACTIVITY = SECTION 2 STARTING
 topic1 & topic2 notes in other computer - copy here later 
 continuing from topic 3 here ...
 
-Ques: render matlab kya ?
+Ques: render & commit ka matlab kya hai ?
 - means ==> react calcualtes what UI to show ( this is a pure calculation btw)
+Render ≠ screen par UI dikhana.
+Render ka matlab hai React tumhare components ko call karke calculate karta hai ki UI kaisa hona chahiye.
+Commit ka matlab hai React uss calculated change ko actual DOM mein apply karta hai.
+
+Steps of updating screen : 
+1. triggering a render --> signalling react to render a component
+   can happen only in 2 situations : 
+      - intiial render - first time app start hui (root.render(<App />))
+      - state is updated in any component - isme the set state fnc signals ki meri state change hui hai, toh pls ek render schedule krdo 
+
+2. rendering a component --> react calculating how UI should be basically calculating ki dom mai kya changes chahiye 
+
+3. commiting the changes --> applying those changes to the actual DOM 
+
+Note : React only applies the necessary DOM changes. Meaning it will compare the previous render ka changes with the next render , agar same hai pehle jaise toh change nhi krega. only the place where changes have happened, those will be updated..others will remian as it is. 
+
+Ques : What is the actual meaning of React re-renders a component then ?
+
+"Component re-render hua." Iska matlab usually:
+
+React called the component again
+        ↓
+Component returned new JSX
+        ↓
+React calculated differences
+
+Iska automatically ye matlab nahi hai ki DOM completely recreate hua.
+
+Mental model : 
+
+             STATE UPDATE
+                  ↓
+               TRIGGER
+                  ↓
+        React calls components
+                  ↓
+                RENDER
+                  ↓
+       New UI calculate hoti hai
+                  ↓
+       Previous UI se compare
+                  ↓
+              COMMIT
+                  ↓
+      Necessary DOM changes only
+                  ↓
+           Browser PAINT
+                  ↓
+            User sees UI
 
 Ques : What is state isolation ?
 - It basically means that when u render multiple instances of the same component, then every copy will get its own state. Changes/updates in state of one a particular copy will not affect the state of other copies.
@@ -553,9 +602,127 @@ Ques : Then what is the diff bet state & props ?
 Ques : What if you wanted both counters to keep their states in sync? 
 - The right way to do it in React is to remove state from child components and add it to their closest shared parent. 
 
- 
+State as a snapshot mental model : 
 
-Ques : event handler functions “close over” any variables declared while rendering. - matlab kya hai iska ??
+React stores state internally 
+       ↓
+Render happens
+       ↓
+React gives that render a snapshot : state --> count = 0 
+       ↓
+Component uses that snapshot
+       ↓
+Event handlers & asyc code ( like setTimeOut,etc) use that same snapshot
+       ↓
+setState(count+1)
+       ↓
+doesn't change current snapshot
+       ↓
+request another render . New render happens 
+       ↓
+React creates a NEW snapshot with the updated state --> count = 1
+       ↓
+Now Component uses this new snapshot
+       ↓
+Event handlers & asyc code ( like setTimeOut,etc) use this new snapshot
+
+So in summary : 
+Render 1 → state snapshot = 0
+Render 2 → state snapshot = 1
+Render 3 → state snapshot = 2
+
+Important points to know : 
+  1. State is maintained by react internally. It is not stored like normal variables in the function component. 
+
+  2. setState() ke immediately baad changes nako dikhti..why ?? - coz setState() signals react to re-render the component with the updated val of state. Meaning that in next render the val will be updated. THe state variable val will remian same/fixed for the current render == snapshot bhi bolte. same for event handlers. 
+
+  3. State variables val dont change inside the current render. Therefore, state update ka effect hamesha next render mai dikhega aapko.
+
+  4. The old snapshot is never changed. Always a new snapshot is created on re-render.
+
+  5. State is like a snapshot because a render receives a fixed version of state; calling setState doesn't change that current snapshot — it requests a new render, which receives a new snapshot.
+
+  6. Every render has its own normal variables, functions, and event handlers. these dont survive the re-renders & Every render (and functions inside it) will always “see” the snapshot of the state that React gave to that render.
+
+Guess the op: 
+
+Ques 1 : 
+
+const [number, setNumber] = useState(0);
+setNumber(number + 1);
+console.log(number);  // 0 
+
+--> curr snapshot : number = 0 ; next time jab component render hoyega tab 1 hogi val abhi toh 0 hi rhegi . 
+
+-------------------------------------------
+
+Ques 2 : 
+
+const [number, setNumber] = useState(0);
+setNumber(number + 1);
+setNumber(number + 1);
+setNumber(number + 1);
+console.log(number);  // 0 
+
+--> curr snapshot : number = 0 ; next time jab component render hoyega tab 1 hogi val abhi toh 0 hi rhegi . bas yahan aap 3 baar val 1 set krre hehe !!
+
+----------------------------------------
+
+Ques 3 : 
+
+const [number, setNumber] = useState(0);
+setNumber(5);
+
+setTimeout(() => {
+  console.log(number); //0
+}, 3000);
+
+--> here curr snapshot : number = 0 , so setTimeout will use this snapshot only even if the state got updated before and val in UI is displaying as 5. becuase setTimeOut was created in that particular render where state snapshot: number =0 tha isiliye even after 3 sec it will display 0 as it will use state val from that particular snapshot only. 
+
+-------------------------------------------------------------------
+
+***Very Important point : 
+
+React re-render par component ke andar ka code dobara execute hota hai, isliye local variables aur functions dobara create hote hain. Lekin DOM elements necessarily dobara create nahi hote.
+
+Example : 
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const name = "Harshita";
+
+  const double = count * 2;
+
+  function handleClick() {
+    console.log(count);
+  }
+
+  const obj = { count };
+
+  return <button onClick={handleClick}>{count}</button>;
+}
+
+WHen this re-renders : 
+
+Counter() dobara execute
+        ↓
+─────────────────────────
+const name        → new variable
+const double      → new variable/value
+handleClick       → new function
+const obj         → new object
+JSX               → new JSX element/object description
+─────────────────────────
+
+Actual DOM <button>
+        ↓
+❌ necessarily recreate nahi hota
+        ↓
+React new JSX ko previous result se compare karta hai aur sirf necessary DOM changes commit karta hai.
+
+What about useState ?
+- Re-render par useState(0) line dobara execute hoti hai, but React state ko reset nahi karta. coz react state ko internally store krta, toh render ke hisab se value laake deta. it retians the value between renders. 
 
 Note : 
 Multiple hooks can be called , but they should always be called in the same order in every component render and all calls to Hooks happen before the first return.
