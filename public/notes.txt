@@ -512,3 +512,94 @@ Elements:
   └── objects/arrays → same references ⚠️
 
 ----------------------------------------------------------------------------------------
+ADDING INTERACTIVITY = SECTION 2 STARTING 
+----------------------------------------------------------------------------------------
+topic1 & topic2 notes in other computer - copy here later 
+continuing from topic 3 here ...
+
+Ques: render matlab kya ?
+- means ==> react calcualtes what UI to show ( this is a pure calculation btw)
+
+Ques : What is state isolation ?
+- It basically means that when u render multiple instances of the same component, then every copy will get its own state. Changes/updates in state of one a particular copy will not affect the state of other copies.
+
+Component instance = component ki ek rendered copy like below : 
+
+<Counter /> #Counter1 --> own state : count = 5;
+<Counter /> #Counter2 --> own state : count = 1;
+
+Dono same Counter component/function se bane hain, but they are separate instances.
+
+Ques : Is state private in react ?
+- Yes, state is private meaning that it is private to the component in which it was declared. Meaning the parent component or other components do not have a control on it automatically & cannot access that state directly.
+
+Example : 
+function App(){
+  <Counter /> 
+}
+
+function Counter(){
+  const [count,setCount] = useState(0);
+}
+
+Here, the app is parent of counter. App renders counter so it knows that counter exists but it does not know automatically that counter mai jo count state hai uska value kya hai. for eg count = 7 hai . but app does not know that and it cannot control it as it does not have access to it directly. 
+
+Ques : Then what is the diff bet state & props ?
+
+- Props are used to pass data from parent to child components. Meaning parents have control over what it wants to send the child. The children cannot mutate the props as they are read only. 
+
+- State is private to the component in which it is declared so the parent has no control over it directly. Parent cannot change the state defined in child component as it does not have access to it directly. This lets you add state to any component or remove it without impacting the rest of the components.
+
+Ques : What if you wanted both counters to keep their states in sync? 
+- The right way to do it in React is to remove state from child components and add it to their closest shared parent. 
+
+ 
+
+Ques : event handler functions “close over” any variables declared while rendering. - matlab kya hai iska ??
+
+Note : 
+Multiple hooks can be called , but they should always be called in the same order in every component render and all calls to Hooks happen before the first return.
+
+eg: the below code will give an error because there is a hook call being made after first return conditionally 
+
+function displayFeedBack(){
+
+ const [isSent, setIsSent] = useState(false);
+  
+  if (isSent) {
+    return <h1>Thank you!</h1>;
+  }
+
+  const [message, setMessage] = useState(''); //this line is causing the error
+
+  return(
+    <h2>Feeback form to be filled !!</h2>
+  )
+}
+
+https://react.dev/learn/state-a-components-memory - challenge 2 is good for state practice - ki single mai combine kaise krskte and sepearate kaise krskte handle - kept for revision !!
+
+how to design systems of UI - https://uxdesign.cc/everything-you-need-to-know-about-design-systems-54b109851969 - do give it a read - looks very interesting !!
+ 
+topic - https://react.dev/learn/render-and-commit - zyada samaj saa ni aaya - try to spend some more time on it with gpt - shyada better unerstanding bane - abhi toh it all sounds like giberish 
+
+React keeps the state values “fixed” within one render’s event handlers. You don’t need to worry whether the state has changed while the code is running. - ache se samaj ni aaya - gpt zindabad here !!
+
+Updating objects in state 
+In other words, you should treat any JavaScript object that you put into state as read-only. - why ?
+
+Mutation is only a problem when you change existing objects that are already in state. Mutating an object you’ve just created is okay because no other code references it yet. Changing it isn’t going to accidentally impact something that depends on it. This is called a “local mutation”. You can even do local mutation while rendering. Very convenient and completely okay!
+
+You can use the ... object spread syntax so that you don’t need to copy every property separately.
+
+setPerson({
+  ...person, // Copy the old fields
+  firstName: e.target.value // But override this one
+});
+
+Note that the ... spread syntax is “shallow”—it only copies things one level deep. This makes it fast, but it also means that if you want to update a nested property, you’ll have to use it more than once.
+
+But in React, you treat state as immutable! 
+Why is mutating state not recommended in React? 
+
+Arrays are mutable in JavaScript, but you should treat them as immutable when you store them in state. Just like with objects, when you want to update an array stored in state, you need to create a new one (or make a copy of an existing one), and then set state to use the new array.
