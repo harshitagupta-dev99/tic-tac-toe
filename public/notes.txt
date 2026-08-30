@@ -748,25 +748,207 @@ https://react.dev/learn/state-a-components-memory - challenge 2 is good for stat
 
 how to design systems of UI - https://uxdesign.cc/everything-you-need-to-know-about-design-systems-54b109851969 - do give it a read - looks very interesting !!
  
-topic - https://react.dev/learn/render-and-commit - zyada samaj saa ni aaya - try to spend some more time on it with gpt - shyada better unerstanding bane - abhi toh it all sounds like giberish 
 
-React keeps the state values “fixed” within one render’s event handlers. You don’t need to worry whether the state has changed while the code is running. - ache se samaj ni aaya - gpt zindabad here !!
+==============================================================
+ZOR SE BOLO - JAI MATA DI - SAARE BOLO - JAI MATA DI !!
 
+queueing + prev => prev + 1 state update -- clarity ni milra ispe abhi - jab koi real usecase milegi - return to this topic shaayd better samaj aaye. 
+link : https://react.dev/learn/queueing-a-series-of-state-updates
+
+-------------------------------------------------------------------------------------
 Updating objects in state 
-In other words, you should treat any JavaScript object that you put into state as read-only. - why ?
+-- iss topic mai mota mota React humko yeh bolra hai ki : agar state mein object hai toh usko directly change mat karo. Uski copy banao, and copy ko state mein set karo.
 
-Mutation is only a problem when you change existing objects that are already in state. Mutating an object you’ve just created is okay because no other code references it yet. Changing it isn’t going to accidentally impact something that depends on it. This is called a “local mutation”. You can even do local mutation while rendering. Very convenient and completely okay!
+-- React state ko snapshot ki tarah treat karo — existing snapshot ko chhedo mat; jab change chahiye, naya snapshot do.
 
-You can use the ... object spread syntax so that you don’t need to copy every property separately.
+Be it primitive data types or reference data types , in react : 
+State ko replace karo, existing state ko mutate mat karo.
+
+mutate here meaning ==> do not change the contents of the state directly. 
+
+Mental model : 
+
+State
+ ↓
+Don't modify existing state
+ ↓
+Create new value/object
+ ↓
+setState(newValue)
+
+yeh mat kro : 
+
+const [person,setPerson] = useState({
+  age: 10, 
+  name: "Harshu", 
+  favColor: "pink
+});
+person.age = 23;
+setPerson(person);  // ❌ same reference of obj passed, react wont be abe to detect this change - UI not updated.
+
+blki yeh kro : 
 
 setPerson({
-  ...person, // Copy the old fields
-  firstName: e.target.value // But override this one
-});
+  ...person,
+  age: 23
+})  //ab ek naye obj ka ref pass hogi - react will be able to detect the changes - UI bhi correctly update hoga 
 
-Note that the ... spread syntax is “shallow”—it only copies things one level deep. This makes it fast, but it also means that if you want to update a nested property, you’ll have to use it more than once.
+yeh allowed hai : 
 
-But in React, you treat state as immutable! 
-Why is mutating state not recommended in React? 
+const person = { name: "A" };
+person.name = "B"; // ✅ normal JS, allowed
 
-Arrays are mutable in JavaScript, but you should treat them as immutable when you store them in state. Just like with objects, when you want to update an array stored in state, you need to create a new one (or make a copy of an existing one), and then set state to use the new array.
+kuch main 5-6 points hai jo sum up krte isko ache se : 
+  
+  1. Existing state ko mutate mat karo; state ko hamesha replace karo — primitive ho ya object/array.
+  
+  2. Primitives mein new value dete hain: setAge(age + 2).
+
+  3. Objects/arrays mein new object/array banao, old data copy karo (...) aur changes karo.
+
+  4. React primitives ko value se aur objects/arrays ko reference/identity se compare karta hai; new reference dene se React change detect kar pata hai.
+
+  5. Jo variables React state ka part nahi hain, unhe normal JavaScript rules ke according mutate kar sakte ho. React ki “don’t mutate” rule specifically state ke liye hai.
+
+  6. For nested objects in state , if you want to change/update the nested property, toh jis-jis level ko change kar rahe ho, us level tak ki new copy banao.
+
+    const [person, setPerson] = useState({
+      name: "A",
+      artwork: {
+        title: "Blue Nana",
+        city: "Hamburg"
+      }
+    });
+
+    Agar city change karni hai:
+
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork, //copy the old fields
+        city: "Delhi" //override this one as this needs to be updated 
+      }
+    });
+
+    Why two spreads?
+
+    person
+      ↓
+    artwork
+      ↓
+    city
+
+    city change karni hai → new artwork object chahiye → because artwork changed, new person object bhi banana padega.
+---------------------------------------------------------------------------------------
+Likewise for updating an array in state :
+
+Array in state
+      ↓
+Don't mutate existing array
+      ↓
+Create new array
+      ↓
+setState(newArray)
+
+Becuase array is also a reference type hehe !!
+
+IMPORTANT TABLE : 
+
+| What you want | ❌ Mutates                | ✅ Use instead                 |
+| ------------- | ------------------------ | ----------------------------- |
+| Add           | `push`, `unshift`        | `...`, `concat`               |
+| Remove        | `pop`, `shift`, `splice` | `filter`, `slice`             |
+| Replace       | `arr[i] = ...`, `splice` | `map`                         |
+| Sort          | `sort`, `reverse`        | copy first, then sort/reverse |
+
+eg : 
+const [artists, setArtists] = useState([]);
+
+artists.push(newArtist); // ❌ push modifies the existing array in state. 
+setArtists([   ✅ here u create a new arr and pass it to set fnc . we insert the new artist at the end- this is the right way to do it  - simialr to push
+  ...artists,
+  newArtist
+]);
+
+setArtists([  
+  newArtist,   //here we insert the new artist at the start - similar to unshift
+  ...artists
+]);
+
+artists.splice(2, 1); ❌ slice modifies the existing array in state. 
+
+setArtists(
+  artists.filter(artist => artist.id !== id)  //gives u a new arr of filtered items - use for pop(),deletting items
+);
+
+counters[1] = counters[1] + 1; ❌ this will also modifies the existing array in state. 
+
+setCounters(  //instead we use a map to replace/transform ele of arr - map always returns us a new arr 
+  counters.map((counter, index) => {
+    if (index === 1) {
+      return counter + 1;
+    }
+
+    return counter;
+  })
+);
+
+One imp example : Array of objects mai kuch update krna ho toh ??
+
+Array changed?
+→ New array ✅
+
+Which object changed?
+→ Make a new object for that one ✅
+
+Other objects changed?
+→ No → reuse them ✅ but woh same reference se pass honge - that is fine. they are not changes anyways . so not a problem
+
+eg : SUppose u want the id:1 wala ele to be marked as seen . how to do it ??
+
+const [artists, setArtists] = useState([
+  { id: 1, name: "A", seen: false },
+  { id: 2, name: "B", seen: false }
+]);
+
+HOW NOT TO DO IT -- YEH ZYADA ACHE SE PATA HONA CHAHIYE ... HEHE :)
+
+const newArtists = [...artists];  //NEW ARRAY CREATED FINE BUT THE OBJECTS INSIDE ARE STILL PASSED BY REF. POINTITN TO THE SAME REF. AS THAT OF OG OBJECTS.
+newArtists[0].seen = true; //HERE U ARE MUTATING THE EXISTING OBJECTS IN STATE 
+setArtists(newArtists);  //WONT WORK - NO UPDATE IN UI , COZ REFERENCE TOH SAME HI HAI OBJECTS KA !!
+
+OLD ARRAY                 NEW ARRAY
+
+artists                   newArtists
+   ↓                         ↓
+[ object A ]  ─────────→ [ object A ]
+
+The arrays are different. BUT:  artists[0] === newArtists[0]  //TRUE - SO NO UPDATE IN uI
+
+NOW LETS TALK ABOUT , HOW TO UPDATE IT ACTUALLY ??
+
+setArtists(
+  artists.map(artist => {  //MAP ALWAYS GIVES US A NEW ARRAY
+    if (artist.id === currId) {
+      return {   //THE ITEM WE WANNNA CHANGE, WE CREATE A NEW OBJECT FOR IT
+        ...artist,
+        seen: true
+      };
+    }
+
+    return artist; //UNCHANGED OBJECTS REMAIN AS IT IS. NO HARM CAUSED 
+  })
+);
+
+OLD ARRAY                 NEW ARRAY
+    ↓                         ↓
+[A, B]                    [A', B]
+ ↓                         ↓
+old A                     NEW A
+seen:false                seen:true
+B didn't change, so we can safely reuse the old B object.
+----------------------------------------------------------------------------------------------
+
+
+
+
