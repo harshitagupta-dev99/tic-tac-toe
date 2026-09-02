@@ -1267,3 +1267,7 @@ function Panel({isActive,onShow}){
 }
 
 So, If state only concerns one component → keep it local. If multiple components need to coordinate → lift it to their closest common parent → parent becomes the source of truth → pass data down and callbacks up.
+
+https://www.youtube.com/watch?v=AGb52zpOBvc - codebix
+https://www.youtube.com/watch?v=_cBWWebTVpI - codewithMIK
+https://www.youtube.com/watch?v=P6RZZMu_maU - neecode.io
