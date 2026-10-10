@@ -1,0 +1,47 @@
+Hi Anmol,
+I'm impressed by the work you're doing at Microsoft. With my experience in React and building responsive web applications, I believe I can contribute to your team. Are there any openings that align with my background? Looking forward to connecting!
+
+Hi Anusha ,I applied for the Frontend SDE role a couple of weeks back. I have 3 years experience working in React/typescript /JavaScript & an immediate joiner (0 notice). I'd love to connect & share my resume to see if I fit any current or future pipeline needs on your team. 
+Regards, Harshita Gupta
+
+Hi Nivethitha, I just applied for the Frontend Engineer role at goML. I bring 3 years of experience in React, TypeScript, and JS, and I'm an immediate joiner (0 notice). View my live project here: https://movie-search-system.netlify.app/ I'd like to connect and share my full resume. Regards!
+
+
+
+The "Immediate Joiner" Pitch Template
+
+Hi [Recruiter Name],
+Just applied for the Frontend Engineer role. I am an Immediate Joiner (0 days notice period).
+Quick Summary:
+* Experience: 3 years specializing in React, TypeScript, and JavaScript.
+* Code Sample: Built a responsive Movie App using React/TS to handle dynamic API fetching and state management: [Insert GitHub/Live Link]
+My resume is attached. Let me know if my profile aligns with the team's requirements.
+Regards, Harshita
+
+Example message for a casual college acquaintance:
+"Hi [Name], hope you're doing well.
+I saw on LinkedIn that you're working at [Company Name] now—congrats on the role! We went to [College Name] together (I think we were in the same batch/adjacent branches).
+I’m currently looking out for a frontend change (3 Yrs Exp, React/TS, Immediate Joiner). I noticed a couple of Frontend Engineer openings at your company. If your team or internal portal is actively accepting referrals right now, I’d love to share my resume over. Let me know if that works. 
+Thanks, Harshita
+
+However, there is ONE exception where you can still save the application:
+If the job was posted less than two weeks ago, and the status says pending, you can absolutely send the recruiter a DM today.
+Here is exactly how you handle those specific recent "pending" jobs so it doesn't sound like old spam:
+Hi [Recruiter Name],
+I applied for the Frontend Engineer role a few days ago via the portal and wanted to reach out directly. I am an Immediate Joiner specializing in React, TypeScript, and JavaScript (3 years of experience).
+My resume is attached below. Would love to connect if my background fits what the team is looking for.
+Regards, Harshita
+
+The "Future Openings" Template (For >14 Days Old Applications)
+Hi [Recruiter Name],
+I applied for the Frontend Engineer role a couple of weeks back. I know you may be well into the hiring process for this specific slot, but I wanted to drop a quick line for the future.
+I am an Immediate Joiner with 3 years of experience in React, TypeScript, and JavaScript.
+My resume is attached. If you keep a talent pipeline for upcoming frontend needs or future team expansions, I'd love to stay on your radar.
+Regards, Harshita 
+
+Keep it very short and professional. Here is the exact template you can use to reply to those 10 rejections:
+Hi [Recruiter Name or Team],
+Thank you for letting me know about the update regarding the Frontend Engineer role.
+While I'm disappointed it didn't work out this time, I really appreciate your time and consideration. As a reminder, I am an Immediate Joiner specializing in React, TypeScript, and JavaScript (3 years of experience).
+If any similar frontend opportunities open up in the future or if you scale the team down the line, I would love to be considered.
+Regards, Harshita

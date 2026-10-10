@@ -4,14 +4,18 @@ React can change how you think about the designs you look at and the apps you bu
 Separation of concerns - it is a design technique jimse a component should ideally only be concerned with one thing. If it ends up growing, it should be decomposed into smaller subcomponents.
 
 step 1 : identify the componenents from the designs
+
 step 2: define the component heirarchy. Components inside another component in the design = child component in heirarchy 
+
 step 3: build a static version of your app . Covers displaying data & design of UI using props & your data model. No state introduced yet ==> meaning no interactivity added yet.
+
 step 4 : Add interactivtiy to the app - how - by first structuring your state - how ?? 
     - a) Think of all of the pieces of data in the example application
     - b) Identify which of these is a state 
            # Does it remain unchanged over time? If so, it isn’t state.
            # Is it passed in from a parent via props? If so, it isn’t state. - this one not very clear !!
            # Can you compute it based on existing state or props in your component? If so, it definitely isn’t state!
+
 step 5: identify where should the state live ==> meaning which component owns the state. how to figure it out ??
         # Identify the components that u think will be using that state
         # Find their common parent - a component above them all in the hierarchy.
@@ -19,6 +23,7 @@ step 5: identify where should the state live ==> meaning which component owns th
             ==> Often, you can put the state directly into their common parent.
             ==> You can also put the state into some component above their common parent.
             ==> If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common parent component
+            
 step6: add inverse data flow - say user input changes, data changes - this has to be handeld then 
 
 data flow in react --> unidirectional --> from parent to child 

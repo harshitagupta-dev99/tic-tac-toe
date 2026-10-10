@@ -1,0 +1,7 @@
+https://medium.com/@TusharKanjariya/your-javascript-is-slower-than-you-think-fix-these-habits-311723ca0f70?sk=39d33b6718f6cf046d1cf075b9bba543
+
+Beautiful article on small small yet imp things one can improve in js in daily code 
+
+https://javascript.plainenglish.io/junior-vs-senior-developer-how-they-solve-the-same-problem-differently-e45e3b0a45f4
+
+An interesting read - do read it and tell me how senior u felt hehe !!

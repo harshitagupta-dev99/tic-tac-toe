@@ -1,0 +1,374 @@
+https://medium.com/@TusharKanjariya/every-frontend-architecture-pattern-explained-a7ec07e7bbbb?sk=815c04e4979b3a452a9148bcae2181bc
+
+https://www.greatfrontend.com/blog/machine-coding-interview-questions-for-3-years-experience
+
+can u explain this connection in your own words ??
+
+“You type amazon.com → what exactly happens → where is the server → what is the client → where does React run → what is a JS bundle → when does the browser download it → when does HTML exist → when does React take over → where does SEO enter?”
+
+3 musketeers of web dev
+html - strucutre of page
+css - styling add krta hai responsive bananta hai
+js - interactivity add krta -- logic likhte idhar
+style tag --> connects html with css
+script tag --> connects html with js
+tags --> angluar brakcets mai likhte <> --> they show what type of content we want to display on our webpage 
+we can write css & js in the same html file as well, but usually we create seperate files for html css and js - why so ??
+- ans : soc ( seperation of concerns : it says one type of file should handle only one type of task , html hai toh sirf html likho usme -- more clean and clear as code managed well - overtime code bhut zyada bada ho skta and it becomes difficult to manage such huge lines of code coz many devs work together so it becomes easier for everyone to understand in small small chunks + readablity better hoti + helps with browser caching  )
+
+html , css --> one shot apna college for revison --> good idea
+gfe article css --> covers interview ques --> you can checkout 
+
+window object --> this is browser ka object not js ka . it is automiatically created by the browser. it is basically a global object jisme bhut saare methods and properties hoti jo ki aap use krskte in your code . 
+eg: alert, console.log
+
+dom ? --> document object model --> tree like strucutre 
+window ek global object hai jisme document ek object hai jisme aapka saara html code rehta hai ussi ko dom nbol dete. jbhi koi webpage load hoti, toh browser yeh dom create krta hai 
+console.log(document) --> prints the html strucutre fully 
+console.dir(window.document) --> prints the propeties & methods of special objects like document on the console
+
+soo basically we can access the full html in js using this document object and manipulate it --> first select the element jisme change krna, then make change 
+
+INTRODUCTION 
+Frontend architecture patterns are all answers to one question: how much work should the browser do, versus the server, versus build time?Everything else like SSR, RSC, micro-frontends, BFFs is just a different place to draw that line.
+
+Computers connected to the internet are called clients and servers. Clients are the typical web user's internet-connected devices
+Servers are computers that store webpages, sites, or apps. When a client wants to access a webpage, a copy of the webpage code is downloaded from the server to the client machine, where it is rendered by the browser and displayed to the user.
+
+
+browser --> can only display html no matter what framework u use. browser ko sirf html,css and js chahiye hoti nothing else . ab woh html kidhar generate hota ussi ko rendering techniques bolte idhar
+server --> just another computer which accepts requests made by a client, processes that request and responds to it by returning something in reutn.
+client --> anything that sends a request and gets a response back.
+big js bundles 
+dom 
+latency
+For data to get back and forth, we need the following things:
+
+Your internet connection: Allows you to send and receive data on the internet. It's basically like the street between your house and the shop.
+
+TCP/IP: Transmission Control Protocol and Internet Protocol (TCP/IP) are communication protocols that define how data should travel across the internet. This is like the transport mechanisms that let you place an order, go to the shop, and buy your goods. In our example, this is like a car or a bike (or however else you might travel along the road).
+
+DNS: The Domain Name System (DNS) is like an address book for websites. When you type a web address in your browser, the browser looks at the DNS to find the website's IP address — the actual address the server is located at — before it can retrieve the website (see DNS explained below for more information). The browser needs to find out which server the website lives on, so it can send HTTP messages to the right place (see below). This is like looking up the address of the shop before you visit it.
+
+HTTP: Hypertext Transfer Protocol (HTTP) is an application protocol that defines a language for clients and servers to speak to each other. This is like the language you use to order your goods. See HTTP basics below.
+
+Files: A website is made up of many different files, which are like the different goods you buy from the shop. These files come in two main types:
+
+Code: Websites are built primarily from HTML, CSS, and JavaScript — the different programming languages websites are written in, which the browser interprets and assembles into a web page to display to a user.
+Assets: This is a collective term for all the other items that appear on a website — such as images, music, video, Word documents, and PDFs — that aren't code that the browser interprets.
+Note: You can find out how the browser assembles these files into a web page later in the course, in How browsers load websites.
+
+So what happens, exactly?
+When you type a web address (which is technically part of a URL) into your browser address bar, the following steps occur:
+
+The browser goes to the DNS server and finds the real address of the server that the website lives on.
+The browser sends an HTTP request message to the server, asking it to send a copy of the website to the client. This message, and all other data sent between the client and the server, is sent across your internet connection using TCP/IP.
+If the server approves the client's request, the server sends the client a "200 OK" message, which means "Of course you can look at that website! Here it is", and then starts sending the website's files to the browser as a series of small chunks called packets.
+The browser assembles the small chunks into a complete web page and displays it to you.
+
+Real web addresses (URLs) aren't the nice, memorable strings you type into your address bar to find your favorite websites. They are special numbers that look like this: 192.0.2.172.
+This is called an IP address, and it represents a unique location on the web. However, it's not very easy to remember, is it? That's why the Domain Name System was invented. This system uses special servers that match up a web address you type into your browser (like mozilla.org) to the website's real (IP) address. Large websites are commonly made available on multiple servers, so that they load efficiently for different users worldwide. As a result, the IP address may vary depending on where you are.
+
+
+Earlier, we used the term "packets" to describe the format in which the data is transferred between the client and server. What do we mean here?
+
+When data is sent across the web, it is sent in multiple small chunks called packets. Each packet contains:
+
+A header, which includes details such as the server and client IP address, the packet number, the total number of packets in the transmission, and details of the protocols used in the transmission.
+A payload, which contains the actual data sent in the packet.
+There are multiple reasons why data is sent in small packets, but most significantly:
+
+They are sometimes dropped or corrupted, and when this happens, it's quicker and easier for the client to request the missing packets rather than an entire file.
+The packets can be routed along different paths, making the transmission as efficient as possible and reducing the possibility of slowing down the network — especially when many users are requesting the same resource simultaneously. The packets may arrive out of sequence, but the client can use the information in the packet headers to make sure they are assembled in the correct order.
+
+A URL is a web address plus a protocol: for example, if you open a new tab in your browser, type in developer.mozilla.org into the address bar, and press Enter/Return, you will be redirected to a URL like the following one:
+
+https://developer.mozilla.org/en-US/
+The main parts of the URL are:
+
+https
+The protocol being used to send the request. In this case, we are using HTTPS, which is a secure version of HTTP that stops bad people from reading your data while it is being transported. On the modern web, pretty much every server uses HTTPS, so if you don't include it explicitly, the browser assumes that is what you are using and adds it for you.
+
+HTML, CSS, and JavaScript are front-end (or client-side) languages, which means they are run by the browser to produce a website front-end that your users can use.
+
+There is another class of languages called back-end (or server-side) languages, meaning that they are run on the server before the result is then sent to the browser to be displayed. A typical use for a server-side language is to get some data out of a database, generate some HTML to contain the data, then send the HTML over to the browser to display it to the user.
+
+Example server-side frameworks and languages include ASP.NET (C#), Django (Python), Laravel (PHP), and Next.js (JavaScript).
+
+Another way that client-side and server-side languages are often described is static and dynamic:
+
+A plain HTML file is stored on the server. When requested, it is delivered to the client, unchanged, and rendered by the browser. Because it does not change, it is referred to as "static".
+Server-side code (such as a Python script or an ASP.NET page) generates HTML content that varies depending on what data is passed to it, and then returns that HTML to the client. It is therefore referred to as "dynamic". For example, the same weather forecast page can show different data depending on whether the weather is sunny or rainy, what location the user is in, and what their preferences are (some users may want to see pollen count and humidity, whereas others might not care about that data and might select preferences to hide it).
+There is often a bit of overlap between the concepts of static and dynamic code. Server-side languages usually define HTML structures inside a template file, which tend to be mostly static HTML with some special dynamic sections included that change depending on what data needs to be inserted.
+
+Web best practices: check later 
+
+browsers are special --> most widely used --> very popular 
+https://arindam1729.hashnode.dev/the-inner-workings-of-web-browsers
+
+Rendering Engine Converts the HTML code to NodeList.And most of the engines are written in C++ so Though we are writing our code in HTML, it's being parsed in the form of C++.
+
+Remember! Having a DOM doesn't mean we have something to show on the screen! It's just that we have a DOM created in the memory.
+
+When a browser receives an HTML file, it doesn't stop there. It also requests and receives external CSS files linked to the page.
+
+After getting the Raw data it works just like HTML and creates Objects. These objects also need some relations, So relations are set up and that establishes a model.
+
+So just like DOM(Document Object Model) CSS creates its own Object Model, that is CssOM(CSS Object Model).
+
+The Render Tree 🌳: Painting the Web
+When the Browser loads an HTML file it starts working on it's DOM. But the moment it sees a link for CSS it starts working with CssOM parallelly. But as of now we don't have any relations between DOM and CssOM.
+
+Here Comes a New Tree 🌳 that is "Render Tree". The Render Tree is the result of combining the DOM and CSSOM. The Render Tree creates a structure to represent the visual elements on the web page.
+
+After the creation of the render Tree, the Browser starts calculating the size of that screen and according to that, it determines the layout and positioning of each element.
+
+And after all these Hard works, the Browser starts painting (that means rendering the web page on our screen)
+
+So, we have the painted web page on our Screen. But it's still not interactive! To make it interactive we need to add Javascript to it. So let's understand How Javascript works!
+
+While executing the code, the moment the browser sees a Script tag it stops executing all its works. Javascript gets the Highest Priority as it has the power to manipulate the DOM as well as the CSS. So Browser collects all the information from Javascript and then it renders the files.
+
+Now we have discussed the relation between DOM and JS. and We know that our DOM execution will be halted until Javascript completely executes.
+
+But What Happens with the CSSOM and Javascript? What will happen if the CSSOM is not yet ready and we have hit the Javascript tag?
+
+Surprisingly, our Javascript execution will be halted until the CssOM is Ready!
+
+So, The Priority order looks like this :
+
+CSSOM > JavaScript > DOM
+
+A bundler is a development tool that takes hundreds of separate source code files (JavaScript, CSS, HTML, images) and stitches them together into just a few optimized files that a web browser can easily download and understand.
+
+A bundler is a development tool that takes hundreds of separate source code files (JavaScript, CSS, HTML, images) and stitches them together into just a few optimized files that a web browser can easily download and understand.
+
+------------------------------
+## Why Do We Actually Need a Bundler?
+Browsers are great at reading code, but they struggle with scale. Bundlers solve three massive problems for modern developers:
+
+   1. Resolving Dependencies ("Who needs what?"): If your App.js file imports Login.js, and Login.js imports a library called Axios, the bundler looks at all those import statements and builds a "dependency graph" (a map of how files rely on each other). It then sorts them in the exact order they need to run so nothing breaks.
+   2. Reducing Network Requests: In modern apps, you might have 1,000 separate JavaScript files. If a browser had to download 1,000 files one by one, your website would take minutes to load. A bundler squashes those 1,000 files into a single bundle.js file.
+   3. Asset Handling: Modern bundlers don't just bundle JavaScript. They can take your CSS, Sass, images, and fonts, optimize them, and link them correctly to your code.
+
+------------------------------
+## Popular Bundlers You Will Hear About
+
+* Webpack: The classic industry heavy-lifter. Extremely powerful, highly customizable, but notoriously difficult to configure.
+* Vite: The modern favorite. It is incredibly fast because it uses modern browser capabilities during development and uses a bundler called Rollup behind the scenes for production.
+* esbuild / Turbopack: Next-generation, ultra-fast bundlers written in low-level languages like Go and Rust instead of JavaScript.
+
+Would you like to see a simple code example of how a bundler traces imports between two files, or should we talk about how Vite makes bundling faster than older tools?
+
+Yes, your understanding is 100% correct! Aapne bilkul sahi samjha.
+Agar browser 1,000 separate JavaScript files ko ek-ek karke download karega, toh har file ke liye ek naya network request bhejna padega. Isse website bahut slow ho jayegi.
+Bundler ka main kaam yahi hai: woh un saari 1,000 files ko aapas mein jodkar, optimize karke, ek single file (ya 2-3 files) bana deta hai. Isse browser ko sirf ek hi baar download karna padta hai aur website super fast load hoti hai.
+------------------------------
+## Ek Choti Si Cheez Jo Modern Bundlers Extra Karte Hain:
+Aapka concept bilkul perfect hai, bas modern bundlers isme ek chota sa twist aur late hain jise Code Splitting kehte hain:
+
+* Agar woh saari 1,000 files ko sach mein ek hi single file mein daal denge, toh kabhi-kabhi woh single file bahut badi (heavy) ho jaati hai.
+* Isliye modern bundlers (jaise Vite ya Webpack) pure 1,000 files ko 1 file banane ke bajaye, unhe 2 ya 3 smart pieces mein tod dete hain.
+* Example: Ek file sirf Homepage ke liye, aur ek file Dashboard ke liye (jo tabhi download hogi jab user login karega).
+
+But low-level par aapka logic bilkul spot-on hai—bundler ka core purpose hi network requests ko kam karna aur loading speed badhana hai.
+Would you like to see how a bundler actually writes that single file behind the scenes, or should we look at how to check the size of your bundle in a real project?
+
+Yes, it is absolutely crazy how much heavy lifting happens under the hood just to load a single webpage smoothly!
+Let's break down your two excellent questions one by one.
+------------------------------
+## Part 1: How all your files sit on the Server
+Yes, you are 100% correct. Before a user ever visits your website, all your built assets—the final index.html, the optimized bundle.js, the compiled style.css, and compressed images—are already sitting on the server.
+Think of the server like a digital warehouse.
+
+[ Developer's Laptop ] 
+       │  (Runs 'npm run build')
+       ▼
+[ Dist / Build Folder ] ──(Uploaded to)──► [ Server / CDN Warehouse ]
+(bundle.js, index.html, img.png)             (Files sit here waiting)
+                                                       │
+                                                       │ (User visits URL)
+                                                       ▼
+                                             [ Browser Client ]
+                                             (Downloads files & renders)
+
+
+   1. On your laptop: You write code in 1,000 different files.
+   2. The Build Step: You run a command like npm run build. The bundler grabs all those files, compresses them, and spits out a single folder (usually named dist or build).
+   3. Deployment: You upload this dist folder to a hosting server or a Content Delivery Network (CDN) like [Vercel](https://vercel.com/), [Netlify](https://www.netlify.com/), or AWS.
+   4. The Client Request: When a user types your URL, the browser sends a request to that server saying, "Hey, give me the website!" The server looks inside that pre-existing warehouse folder and hands over the index.html and bundle.js.
+
+------------------------------
+## Part 2: How to Check Your JS Bundle Size
+As a developer, keeping an eye on your bundle size is critical. If your bundle gets too heavy, your website will load slowly on mobile networks.
+Here are the two best ways to check it:
+## Method 1: The Quick Way (Terminal Output)
+When you are ready to build your project, you run the build command in your terminal. Modern tools like Vite will automatically print out a beautifully organized list of your bundle chunks and their exact sizes right in your terminal.
+
+npm run build
+
+Output will look like this:
+
+dist/index.html                  0.45 kB
+dist/assets/index-Di9a2kXz.css   4.20 kB
+dist/assets/index-B1u8P_m8.js   142.10 kB  │ kB gzip: 45.20 kB
+
+## Method 2: The Visual Way (Interactive Map)
+If your bundle is massive, you need to know which specific third-party library (like a heavy chart library or date formatter) is causing the bloat.
+You can use a tool called a Visualizer. For Vite projects, you can install a plugin called rollup-plugin-visualizer.
+
+   1. Install it in your project terminal:
+   
+   npm install rollup-plugin-visualizer --save-dev
+   
+   2. Add it to your vite.config.js file:
+   
+   import { defineConfig } from 'vite';import { visualizer } from 'rollup-plugin-visualizer';
+   export default defineConfig({
+     plugins: [visualizer({ open: true })], // Automatically opens the map after building
+   });
+   
+   3. Run npm run build.
+
+It will automatically open a gorgeous, interactive treemap in your browser. It looks like a colorful grid where the bigger the box, the heavier the file. You can literally hover over the boxes to see exactly which JavaScript file is taking up the most space!
+------------------------------
+Would you like to try setting up Vite's visualizer on a project right now, or would you like to know what a "good" target bundle size is for a fast website?
+
+You used npm run build because the files in your raw src folder are for humans (you) to read and edit, but the files generated inside the dist folder are for computers (browsers) to download and run as fast as possible.
+When you want to launch your website live on Vercel, Netlify, or Hostinger, you don’t upload your whole project. You only upload the contents of that newly generated dist or build folder.
+
+
+ok so tell me if im correct here --> as a user when i make the request for a website, the server has this optimised files and these are sent to my browser . my browser downloads these files and creates the webpage for me . but as a developer, when i clone a repo and create a branch and say work on some feature , then when i do npm start or npm run dev , a local server starts which means this server has my files hosted on it ? so where is this local server located then ?
+
+To answer your brilliant question directly: that local server is located right inside your own computer's RAM and CPU.
+Your laptop temporarily turns into the warehouse (the server), and your browser communicates with your own machine. Here is exactly how this magic happens.
+
+Yes, you are 100% correct again! Your mental model of how the internet works versus how local development works is absolutely spot on.
+To answer your brilliant question directly: that local server is located right inside your own computer's RAM and CPU.
+Your laptop temporarily turns into the warehouse (the server), and your browser communicates with your own machine. Here is exactly how this magic happens.
+------------------------------
+## Where is the Local Server Located?
+When you type npm run dev or npm start, your build tool (like Vite or Node.js) runs a small background program on your operating system.
+
+* The Location: It lives in your computer's active memory (RAM).
+* The Address: Because it is running locally, it doesn't have a public dot-com URL. Instead, it uses a special internal shortcut address called localhost (which mathematically points to the IP address 127.0.0.1). This IP address is networking code for "this exact physical computer."
+
+When you open http://localhost:5173 or http://localhost:3000 in Chrome, your browser isn't sending a request out into the real internet. It sends a request inward, talking directly to that background Node.js program running in your RAM.
+------------------------------
+## How "Local Server" Mode Differs from "Production Server" Mode
+While a live production server has static, pre-optimized files sitting quietly in a folder, your local development server is alive and actively watching you work.
+Here is the difference in how they handle requests:
+
+| Scenario | Where is the Server? | What does the Server do when requested? |
+|---|---|---|
+| Real User (Production) | Remote Cloud (e.g., AWS, Vercel) | Instantly hands over the pre-built, optimized bundle.js and index.html. It never changes until the next deployment. |
+| You Developing (npm run dev) | Inside your laptop's RAM | It takes your raw, unoptimized src files, processes them on the fly in milliseconds, and throws them straight into your browser. |
+
+------------------------------
+## The Magic of "Hot Module Replacement" (HMR)
+Because the local server is running right inside your computer's memory, it can do something incredible that a real server cannot do easily: It watches your files.
+
+   1. You edit a line of code in Button.jsx and hit Save.
+   2. The local server instantly detects that you updated that specific file.
+   3. Instead of rebuilding the whole application, it surgically replaces only that button's code directly inside the browser via a live websocket connection.
+
+This is why you don't need to run npm run build while working on a feature branch. The local server handles the conversion on the fly so you can see your changes instantly. Once you are completely done coding the feature, then you run npm run build to package it up for the real internet server!
+------------------------------
+Does the difference between localhost (your machine) and a production URL (the cloud) make sense now, or would you like to know how the browser physically turns that downloaded bundle.js into the final UI you see on screen?
+
+Exactly! You hit the nail right on the head. That is exactly why it is called localhost—because the server is hosted right there on your local machine.
+And your understanding of how it watches your files is perfectly correct, but there is one mind-blowing engineering trick about how it uses your RAM depending on whether you are using an older tool (Webpack) or a modern tool (Vite).
+------------------------------
+## The Evolution: Webpack vs. Vite (How they use your RAM)
+Historically, keeping all 1,000 files in memory was a massive headache. Here is how the two major tools handle your files on the fly:
+## 1. The Old Way: Webpack (npm start)
+Older tools like Webpack would literally take all 1,000 files, bundle them together in your RAM before the local server even started.
+
+* The Problem: Because everything was processed upfront in your RAM, if you had a massive project, running npm start would take 2 to 3 minutes just to boot up!
+* The Edit: When you changed one file, it had to re-process a large chunk of that bundle in memory.
+
+## 2. The Modern Way: Vite (npm run dev)
+Vite changed the game using a concept called Native ESM (ES Modules). Vite doesn't bundle your 1,000 files when you start the dev server. Instead, it starts the server instantly (in milliseconds) because it leaves your files right on your hard drive (SSD/HDD).
+
+* How it works: When you open your browser to localhost, the browser asks Vite, "Hey, I'm loading the Homepage. What files do I need right now?"
+* On-Demand Loading: Vite says, "Oh, you only need these 5 files to show the homepage." It grabs just those 5 files from your hard drive, processes them in your RAM on the fly, and hands them to the browser. The other 995 files are ignored until you navigate to a page that needs them.
+
+------------------------------
+## Yes, It Watches Your Files Dynamically!
+No matter which tool you use, they both use an operating system feature called File System Watching (like a security camera pointing at your project folder).
+When you hit Ctrl + S (Save) in VS Code:
+
+   1. The "camera" alerts your local Node.js server: "Hey! The user just modified line 42 in Navbar.jsx!"
+   2. The server instantly processes just that one file in your RAM.
+   3. It sends a message over an open connection (called a WebSocket) to your browser saying, "Psst, Chrome! Don't refresh the whole page, just swap out the old Navbar code for this new snippet."
+
+This is called Hot Module Replacement (HMR), and it's why your changes appear in the browser almost the exact millisecond you hit save!
+------------------------------
+Now that you know how the code gets to your browser during development, would you like to explore how the browser actually reads that JS bundle to paint pixels on the screen, or should we look at how a real server sends files to a user out in the real world?
+
+
+
+how browsers load websites
+web page rendering
+When the user navigates to a new web page (by clicking a link, or entering a web address in the browser address bar), several HTTP requests are sent, and several files are sent back in HTTP responses. The files received in these responses are processed by the browser and put together into a web page that the user can interact with. This process of assembling the pieces into a web page is called rendering.
+
+https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_browsers_load_websites
+
+Early websites like Static HTML pages loaded instantly, and there was nothing to break.
+
+Then server-side MVC frameworks like Django, Rails, ASP.NET started building HTML per request.
+
+Dynamic data, yes. But a full page reload every time you clicked anything.
+
+Then came the SPA era. React, Vue, Angular.
+
+Suddenly the browser does almost everything: routing, state, validation, sometimes auth. The upside is a UI that feels instant once it’s loaded.
+
+The downside is that “once it’s loaded” part.
+
+Big JavaScript bundles. Slow first paint. And SEO gets trickier but Google does run your JavaScript these days, but rendering can delay indexing on big sites, and plenty of other crawlers (social media preview bots, many AI crawlers) never run your JS at all. If they can’t see your content, it doesn’t exist to them.
+
+===============================================================================
+
+A Backend-for-Frontend (BFF) is a small server layer, owned by the frontend team, that sits between your UI and your real backend services. Its only job is to reshape data into exactly what one specific UI needs.
+
+The frontend calls /products/123 and gets exactly the shape it asked for. No extra fields. No extra round trips.
+
+But the cost is real too. A BFF is one more service to run, monitor, and keep alive.
+If it goes down, your UI goes down with it even if the actual backend is fine.
+
+-------------------------------------------------------------------------------
+4 rendering strategies : these decide where does ur html get build
+ - ssg (static site generation)
+ - isr (incremental static regeneration)
+ - ssr ( server side rendering)
+ - rsc ( react server components)
+ - edge rendering ??
+
+ modular monolith ??
+ BFF's - how does this work ?? 
+ API masking ??
+ micro-frontend's ??
+
+
+You type a URL in your browser and press Enter
+Browser looks up IP address for the domain
+Browser initiates TCP connection with the server
+Browser sends the HTTP request to the server
+Server processes request and sends back a response
+Browser renders the content
+
+Browser render krta kaise hai : 
+browser ek tarah ka full blown system hai not just a peice of software
+it helps u talk to internet , loads your html,css & js files from the remote server and displays them 
+
+html = document object model  ** 
+
+how does browser load html and display it on the screen ??
+1. load everything from the network by default
+2. browser does 2 things mainly : first is display data, second is let u interact with it 
+3. construction of dom and cssom , js injection , rendering the dom , painting on the screen
+
+https://arindam1729.hashnode.dev/the-inner-workings-of-web-browsers
+
+Browsers work by parsing HTML and CSS to construct a DOM and render tree, laying out elements and painting them to the screen. The main components are the user interface, browser engine (which handles networking, JavaScript interpretation, etc.), and rendering engine. The rendering engine constructs the DOM from HTML and CSSOM from CSS, builds the render tree by combining them, then lays out and paints elements to display the final webpage. Optimization focuses on minimizing critical resources, path length, and bytes to speed up the initial render.

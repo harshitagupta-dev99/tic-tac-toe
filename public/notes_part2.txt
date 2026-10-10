@@ -1,0 +1,227 @@
+
+when a parent component re-rerenders does the child components also get re-rendered even if there was no change in them ?
+
+==> Yes, by default, when a parent component re-renders in React, all of its child components will also re-render, regardless of whether their props have changed or if they have no props at all.
+
+Ab agar har child expensive calculation kar raha
+   ↓
+large list process ho rahi
+   ↓
+API-like computation / filtering / sorting
+   ↓
+user ko lag raha app slow hai
+
+tab performance optimisation makes sense
+
+===============================================================================
+
+Tera current thought:
+
+“Parent state change → child re-render → re-render bad hai → useCallback lagao.”
+
+Thoda correction:
+
+Re-render normal hai. Unnecessary EXPENSIVE work baar-baar hona problem ho sakta hai.
+
+===============================================================================
+By default, jabh bhi application re-render krta hai toh uske andar jo bhi functions defined hote woh bhi dobara se banaye jaate ==> meaning unko ek naya reference milta ==> so when react compares with the prev version so it sees f1 !== f1 as reference has changed and now if this function is being passed to some child component , then that component will also re-render even though nothing has actually changed. Now this re-render is un-necessary so we wanna avoid it. Also, think if the func f1 is doing some expnesive calc say filtering an item from 10k items thats expensive so if nothing is changed why u would want ki phirse yeh sab calc ho !! user ko lag aa skta aise 
+
+useCallback??
+React preserves the same function reference until dependencies change.
+
+When to use a usecallback ?
+==> 
+Parent re-renders
+      ↓
+generatePassword reference same
+      ↓
+memoized child can skip re-render
+
+function is passed to a memoized child
+function is a dependency of another hook  -- how this matters ?
+recreating/passing that function actually matters -- how this matters ?
+function has some expensive cacl
+================================================================================
+
+"Why optimise performance? Kya ho jayega re-render se?" 😂
+
+Small app:
+
+10 components
+small calculations
+small list
+
+Probably nothing dramatic.
+
+Large app:
+
+1000 components
+large lists
+complex calculations
+animations
+network requests
+expensive filtering
+large state updates
+
+Repeated unnecessary work can cause:
+
+lag
+slow interactions
+typing delays
+janky scrolling
+unnecessary calculations
+unnecessary API calls
+battery/CPU usage - yeh kaise check krte for any app ?
+
+So performance optimization is:
+
+Don't make the browser do work it doesn't need to do.
+
+Not:
+
+Never let React re-render.
+===============================================================================
+
+usage of prev ? --> kbhi suitable rehta -- not clear even now 
+==> use when new state depends on old state. --> please explain more clearly
+my overall understanding of prev : 
+ok so what i understood overall is that prev helps to reduce bugs in cases where user can do the same action quickly several times and that action requires absolute updated current data. for eg : for a search input, the text gets entirely replaced so we dont need the prev here, but when we are say adding an item to cart, then we need the most updated list here . since react uses baching and state is a snapshot in react, it is possible we drop some items when user clicks too quickly coz re-render has not happened as react will group the state updates and user may not see the updated data on his screen
+
+please chekc the doc as it contains real examples 
+===============================================================================
+
+Natural choice for basic operations : 
+
+1. For update: map → natural fit 
+2. For deletion: filter → natural fit
+3. For addition: [...prev, newTodo]
+===============================================================================
+"Too many re-renders" error kab aati hai? -- try all the below usecases by urslef !!
+( full details shared in word dec --> go through it ( very beautfiully explained ))
+The "Too many re-renders" error in React happens when a component gets stuck in an infinite loop. React automatically stops execution and throws this error to prevent the browser from freezing or crashing.
+
+
+The "Too many re-renders" error in React happens when a component gets stuck in an infinite loop. React automatically stops execution and throws this error to prevent the browser from freezing or crashing.
+
+## Core Causes & Fixes
+1. Calling setState directly in the component body:
+   
+   The Problem: Writing setCount(count + 1) directly inside the function body updates the state immediately during render. This triggers a re-render, which calls the function again, creating a loop.
+   
+   The Fix: Never update state directly in the main body. Wrap it inside a useEffect or an event handler.
+
+2. Executing functions immediately inside event handlers:
+  
+   The Problem: Writing onClick={handleClick()} executes the function immediately when the component renders, instead of waiting for a click.
+   
+   The Fix: Pass a function reference or an arrow function: onClick={handleClick} or onClick={() => handleClick()}.
+
+3. Infinite loops inside useEffect:
+   
+   The Problem: Updating a state variable inside useEffect while including that same variable (or no array at all) in the dependency array.
+   
+   The Fix: Ensure your dependency array [...] is properly configured so the effect only runs when necessary.
+===============================================================================
+
+Reading from localStorage is an expensive operation because it hits the browser's hard drive memory rather than your fast application RAM. --> please explain
+
+ If you don't use the lazy setup, your app will experience a performance slowdown on every single keypress or toggle.
+
+What is a ref ?
+
+When you want a component to “remember” some information but you don’t want that information to trigger new renders or physically grab a dom element , , you can use a ref. 
+
+const ref = useRef(0); //it is is basically an object which contains a single property current jise jo bhi initial value aapne diya woh hoti , here current = 0;
+
+Like state, refs are retained by React between re-renders. However, setting state re-renders a component. Changing a ref does not! You can access the current value of that ref through the ref.current property. 
+
+ref ko read bhi krskte and write bhi !!
+
+sometimes you might need access to the DOM elements managed by React—for example, to focus a node, scroll to it, or measure its size and position. There is no built-in way to do those things in React, so you will need a ref to the DOM node.
+
+Avoid changing DOM nodes managed by React using ref such as removing, adding children -- why ?? becuase react will not be aware of that change and will not know how to manage it. Usually, you will use refs for non-destructive actions like focusing, scrolling, or measuring DOM elements.
+
+=============================================================================
+regarding effects what i understood so far is : Effect Events are non-reactive “pieces” of your Effect code. The code inside effect is reactive. The code inside event hadnlers is non-reactive
+Do not diable the linter as it helps reducing un-neccesary stale value ke bugs 
+what reactive means ? - when state or props or any calc done using these change in a component, the code must execute again - happens in effect
+event handlers are non reactive - say user is typing something in search bar, you dont want the code inside handlesearch to execute immediately, onyl when user clicks searc button u want to execute insde code that is called non- reactive
+
+effects --> they scryonise your component with the external system - ext system here means something which react has no control over - eg ; api calls, browser api, timers , etc. jabhi bhi dependencies mai kuch change hoti toh yeh effect dobara schyronise krta changes with the latest values.
+ event handlers --> these run on user interaction.
+ You can move non-reactive logic from Effects into Effect Events.Don’t pass Effect Events to other components or Hooks
+
+When you write an Effect, the linter will verify that you’ve included every reactive value (like props and state) that the Effect reads in the list of your Effect’s dependencies. This ensures that your Effect remains synchronized with the latest props and state of your component. Unnecessary dependencies may cause your Effect to run too often, or even create an infinite loop.
+
+why strict mode runs 2 times --> to test stress whether ur effect is working properly 
+what is a linter & why is it needed ? should disabling it be fine ?
+why cleanup fnc is needed ? 
+
+To remove a dependency, prove that it’s not a dependency - do not disable the linter 
+
+Notice that you can’t “choose” the dependencies of your Effect. Every reactive value used by your Effect’s code must be declared in your dependency list. The dependency list is determined by the surrounding code:
+Reactive values include props and all variables and functions declared directly inside of your component. 
+
+ For example, you can move roomId out of your component to prove that it’s not reactive and won’t change on re-renders:
+
+ First, you change the code of your Effect or how your reactive values are declared.
+Then, you follow the linter and adjust the dependencies to match the code you have changed.
+If you’re not happy with the list of dependencies, you go back to the first step (and change the code again).
+The last part is important. If you want to change the dependencies, change the surrounding code first. You can think of the dependency list as a list of all the reactive values used by your Effect’s code.You don’t choose what to put on that list. The list describes your code. To change the dependency list, change the code.
+
+The first thing you should think about is whether this code should be an Effect at all.
+The next question you should ask yourself is whether your Effect is doing several unrelated things.
+
+whenever a component re-renders the code inside it runs from scratch
+This problem only affects objects and functions. In JavaScript, each newly created object and function is considered distinct from all the others. It doesn’t matter that the contents inside of them may be the same!
+
+Object and function dependencies can make your Effect re-synchronize more often than you need.
+
+This is why, whenever possible, you should try to avoid objects and functions as your Effect’s dependencies. Instead, try moving them outside the component, inside the Effect, or extracting primitive values out of them.
+Move static objects and functions outside your component 
+
+If your object depends on some reactive value that may change as a result of a re-render, like a roomId prop, you can’t pull it outside your component. You can, however, move its creation inside of your Effect’s code:
+
+<ChatRoom
+  roomId={roomId}
+  options={{
+    serverUrl: serverUrl,
+    roomId: roomId
+  }}
+/>
+This would cause your Effect to re-connect every time the parent component re-renders. To fix this, read information from the object outside the Effect, and avoid having object and function dependencies: This gives you the roomId and serverUrl values that aren’t objects, and that you can read from inside your Effect:
+
+This only works for pure functions because they are safe to call during rendering. If your function is an event handler, but you don’t want its changes to re-synchronize your Effect, wrap it into an Effect Event instead.
+
+Hook names always start with use 
+React applications are built from components. Components are built from Hooks, whether built-in or custom. You’ll likely often use custom Hooks created by others, but occasionally you might write one yourself!
+
+React component names must start with a capital letter, like StatusBar and SaveButton. React components also need to return something that React knows how to display, like a piece of JSX.
+Hook names must start with use followed by a capital letter, like useState (built-in) or useOnlineStatus (custom, like earlier on the page). Hooks may return arbitrary values.
+
+This convention guarantees that you can always look at a component and know where its state, Effects, and other React features might “hide”. For example, if you see a getColor() function call inside your component, you can be sure that it can’t possibly contain React state inside because its name doesn’t start with use. However, a function call like useOnlineStatus() will most likely contain calls to other Hooks inside!
+If your linter is configured for React, it will enforce this naming convention.
+
+Only Hooks and components can call other Hooks!
+
+In the earlier example, when you turned the network on and off, both components updated together. However, it’s wrong to think that a single isOnline state variable is shared between them.
+
+Custom Hooks let you share stateful logic but not state itself. Each call to a Hook is completely independent from every other call to the same Hook. 
+
+When you need to share the state itself between multiple components, lift it up and pass it down instead.
+
+The code inside your custom Hooks will re-run during every re-render of your component. This is why, like components, custom Hooks need to be pure. Think of custom Hooks’ code as part of your component’s body!
+Because custom Hooks re-render together with your component, they always receive the latest props and state. To see what this means, consider this chat room example. Change the server URL or the chat room:
+
+However, whenever you write an Effect, consider whether it would be clearer to also wrap it in a custom Hook. You shouldn’t need Effects very often, so if you’re writing one, it means that you need to “step outside React” to synchronize with some external system or to do something that React doesn’t have a built-in API for. Wrapping it into a custom Hook lets you precisely communicate your intent and how the data flows through it.
+
+A good custom Hook makes the calling code more declarative by constraining what it does. For example, useChatRoom(options) can only connect to the chat room, while useImpressionLog(eventName, extraData) can only send an impression log to the analytics. If your custom Hook API doesn’t constrain the use cases and is very abstract, in the long run it’s likely to introduce more problems than it solves.
+
+Effects are an “escape hatch”: you use them when you need to “step outside React” and when there is no better built-in solution for your use case. With time, the React team’s goal is to reduce the number of the Effects in your app to the minimum by providing more specific solutions to more specific problems. Wrapping your Effects in custom Hooks makes it easier to upgrade your code when these solutions become available.
+
+This is another reason for why wrapping Effects in custom Hooks is often beneficial:
+
+You make the data flow to and from your Effects very explicit.
+You let your components focus on the intent rather than on the exact implementation of your Effects.
+When React adds new features, you can remove those Effects without changing any of your components.
+
